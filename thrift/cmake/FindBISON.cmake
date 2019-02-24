@@ -12,7 +12,7 @@
 
 find_program(
     BISON_EXECUTABLE
-    NAMES bison bison++ win_bison
+    NAMES bison++ bison win_bison
     DOC "path to the bison executable"
 )
 

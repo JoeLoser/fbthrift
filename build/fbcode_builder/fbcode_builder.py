@@ -182,7 +182,7 @@ class FBCodeBuilder(object):
     def debian_deps(self):
         return [
             'autoconf-archive',
-            'bison',
+            'bison++',
             'build-essential',
             'cmake',
             'curl',
