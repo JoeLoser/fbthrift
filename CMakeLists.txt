@@ -74,12 +74,15 @@ option(thriftpy3
 )
 
 function(find_bison)
+  message(STATUS "Searching for bison++ first")
   find_program(BISONPP NAMES bison++ DOC "path to bison++ executable")
   if (BISONPP)
+      message(STATUS "Found bison++")
+
       set(_Bison_SAVED_LC_ALL "$ENV{LC_ALL}")
       set(ENV{LC_ALL} C)
 
-      execute_process(COMMAND ${BISON_EXECUTABLE} --version
+      execute_process(COMMAND ${BISONPP} --version
         OUTPUT_VARIABLE BISON_version_output
         ERROR_VARIABLE BISON_version_error
         RESULT_VARIABLE BISON_version_result
@@ -91,10 +94,12 @@ function(find_bison)
         set(BISON_VERSION "${CMAKE_MATCH_1}")
       endif()
 
-      if (${BISON_VERSION} VERSION_LESS "1.21.9-1")
+      message(STATUS "Bison++ version is" "${BISON_VERSION}")
+      if ("${BISON_VERSION}" VERSION_LESS "1.21.9-1")
           message(FATAL_ERROR "Minimum version of Bison++ not met")
       endif()
   else()
+    message(STATUS "Searching for regular bison")
   	find_package(BISON 3.1 REQUIRED)
   endif()
 endfunction()
