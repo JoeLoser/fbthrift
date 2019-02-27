@@ -73,9 +73,35 @@ option(thriftpy3
   OFF
 )
 
+function(find_bison)
+  find_program(BISONPP NAMES bison++ DOC "path to bison++ executable")
+  if (BISONPP)
+      set(_Bison_SAVED_LC_ALL "$ENV{LC_ALL}")
+      set(ENV{LC_ALL} C)
+
+      execute_process(COMMAND ${BISON_EXECUTABLE} --version
+        OUTPUT_VARIABLE BISON_version_output
+        ERROR_VARIABLE BISON_version_error
+        RESULT_VARIABLE BISON_version_result
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+      set(ENV{LC_ALL} ${_Bison_SAVED_LC_ALL})
+
+      if("${BISON_version_output}" MATCHES "^bison\\+\\+ Version ([^,]+)")
+        set(BISON_VERSION "${CMAKE_MATCH_1}")
+      endif()
+
+      if (${BISON_VERSION} VERSION_LESS "1.21.9-1")
+          message(FATAL_ERROR "Minimum version of Bison++ not met")
+      endif()
+  else()
+  	find_package(BISON 3.1 REQUIRED)
+  endif()
+endfunction()
+
 # Find required dependencies for thrift/compiler
 if(compiler_only OR build_all)
-  find_package(BISON 3.1 REQUIRED)
+  find_bison()
   find_package(FLEX REQUIRED)
   find_package(Mstch REQUIRED)
   include_directories(
