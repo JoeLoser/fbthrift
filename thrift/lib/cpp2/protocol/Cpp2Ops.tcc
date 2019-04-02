@@ -589,8 +589,7 @@ class Cpp2Ops<
   template <class Protocol>
   static uint32_t write(Protocol* prot, const Type* value) {
     typedef typename Type::key_type KeyType;
-    typedef typename std::remove_cv<typename std::remove_reference<decltype(
-        *value->begin())>::type>::type PairType;
+    using PairType = typename folly::remove_cvref_t<decltype(*value->begin())>::type>;
     typedef typename PairType::second_type ValueType;
     uint32_t xfer = 0;
     xfer += prot->writeMapBegin(
@@ -610,8 +609,7 @@ class Cpp2Ops<
     // We do this dance with decltype rather than just using Type::mapped_type
     // because different map implementations (such as Google's dense_hash_map)
     // call it data_type.
-    typedef typename std::remove_cv<typename std::remove_reference<decltype(
-        *value->begin())>::type>::type PairType;
+    using PairType = typename folly::remove_cvref_t<decltype(*value->begin())>::type>;
     typedef typename PairType::second_type ValueType;
     value->clear();
     uint32_t size;
@@ -629,8 +627,7 @@ class Cpp2Ops<
   template <class Protocol>
   static uint32_t serializedSize(Protocol* prot, const Type* value) {
     typedef typename Type::key_type KeyType;
-    typedef typename std::remove_cv<typename std::remove_reference<decltype(
-        *value->begin())>::type>::type PairType;
+    using PairType = typename folly::remove_cvref_t<decltype(*value->begin())>::type>;
     typedef typename PairType::second_type ValueType;
     uint32_t xfer = 0;
     xfer += prot->serializedSizeMapBegin(
@@ -647,8 +644,7 @@ class Cpp2Ops<
   template <class Protocol>
   static uint32_t serializedSizeZC(Protocol* prot, const Type* value) {
     typedef typename Type::key_type KeyType;
-    typedef typename std::remove_cv<typename std::remove_reference<decltype(
-        *value->begin())>::type>::type PairType;
+    using PairType = typename folly::remove_cvref_t<decltype(*value->begin())>::type>;
     typedef typename PairType::second_type ValueType;
     uint32_t xfer = 0;
     xfer += prot->serializedSizeMapBegin(

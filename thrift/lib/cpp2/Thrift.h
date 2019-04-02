@@ -80,7 +80,7 @@ struct is_safe_overload<Class, T> {
     bool,
     !std::is_same<
       Class,
-      typename std::remove_cv<typename std::remove_reference<T>::type>::type
+      folly::remove_cvref_t<T>
     >::value
   >;
 };

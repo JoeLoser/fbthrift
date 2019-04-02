@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <folly/Traits.h>
+
 namespace apache {
 namespace thrift {
 namespace merge_into_detail {
@@ -183,10 +185,10 @@ namespace apache {
 namespace thrift {
 
 template <typename T>
-void merge_into(T&& src, merge_into_detail::remove_const_reference<T>& dst) {
+void merge_into(T&& src, folly::remove_cvref_t<T>& dst) {
   constexpr auto c = std::is_const<T>::value;
   constexpr auto r = std::is_rvalue_reference<T&&>::value;
-  using D = typename merge_into_detail::remove_const_reference<T>;
+  using D = folly::remove_cvref_t<T>;
   using W = fatal::conditional<!c && r, T&&, const D&>;
   merge_into_detail::merge<D>::go(static_cast<W>(src), dst);
 }
