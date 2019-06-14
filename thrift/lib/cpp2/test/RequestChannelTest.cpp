@@ -18,7 +18,6 @@
 
 #include <memory>
 #include <thread>
-#include <folly/Memory.h>
 #include <folly/io/async/EventBase.h>
 #include <folly/io/async/test/ScopedBoundPort.h>
 #include <thrift/lib/cpp/async/TAsyncSocket.h>
@@ -56,7 +55,7 @@ class FunctionSendRecvRequestCallbackTest : public Test {
 
   unique_ptr<TestServiceAsyncClient> newClient(
       SocketAddress const& addr) {
-    return make_unique<TestServiceAsyncClient>(
+    return std::make_unique<TestServiceAsyncClient>(
       HeaderClientChannel::newChannel(TAsyncSocket::newSocket(eb, addr)));
   }
 
@@ -64,7 +63,7 @@ class FunctionSendRecvRequestCallbackTest : public Test {
   ClientReceiveState state;
 
   unique_ptr<FunctionSendRecvRequestCallback> newCallback() {
-    return make_unique<FunctionSendRecvRequestCallback>(
+    return std::make_unique<FunctionSendRecvRequestCallback>(
         [&](auto&& _) { ew = std::move(_); },
         [&](auto&& _) { state = std::move(_); });
   }
@@ -135,14 +134,14 @@ class FunctionSendCallbackTest : public Test {
  public:
   unique_ptr<TestServiceAsyncClient> getClient(
       const folly::SocketAddress& addr) {
-    return make_unique<TestServiceAsyncClient>(
+    return std::make_unique<TestServiceAsyncClient>(
       HeaderClientChannel::newChannel(TAsyncSocket::newSocket(&eb, addr)));
   }
   void sendOnewayMessage(
       const folly::SocketAddress& addr,
       function<void(ClientReceiveState&&)> cb) {
     auto client = getClient(addr);
-    client->noResponse(make_unique<FunctionSendCallback>(move(cb)),
+    client->noResponse(std::make_unique<FunctionSendCallback>(move(cb)),
                        68 /* without loss of generality */);
     eb.loop();
   }
